@@ -36,12 +36,12 @@ CREATE TABLE Employee (
     contact_number VARCHAR(15) UNIQUE,
     branch_id INT NOT NULL,
     dob DATE NOT NULL,
-    street VARCHAR(255),
-    city VARCHAR(100),
-    state VARCHAR(100),
     username VARCHAR(15) UNIQUE NOT NULL CHECK (username REGEXP '^[a-zA-Z0-9]{5,15}$'),
     passhash VARCHAR(255) NOT NULL,
     cnic CHAR(13) UNIQUE NOT NULL CHECK (cnic REGEXP '^[0-9]{13}$'),
+    street varchar(30),
+    city varchar(50),
+    state varchar(50),
     joining_date DATE,
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id) ON DELETE CASCADE
 );
@@ -182,12 +182,12 @@ INSERT INTO Branch (location, contact_number) VALUES
 
 -- Insert Data into Employee Table
 -- Note: The branch IDs in these insertions must match existing IDs in the Branch table.
-INSERT INTO Employee (name, role, contact_number, branch_id, dob, street, city, state, username, passhash, cnic, joining_date) VALUES
-('Ahmed Khan', 'Branch Manager', '03001234567', 1, '1980-03-15', '10 Downing Street', 'Islamabad', 'Punjab', 'ahmedkhan', 'hash123', '1234567890123', '2010-05-01'),
-('Sara Ali', 'Teller', '03019876543', 1, '1992-06-25', '45 A Block', 'Islamabad', 'Punjab', 'saraali', 'hash234', '2345678901234', '2015-03-20'),
-('Zain Riaz', 'Branch Manager', '03214567890', 2, '1985-10-05', '11 C Street', 'Lahore', 'Punjab', 'zainriaz', 'hash345', '3456789012345', '2008-11-15'),
-('Ayesha Iqbal', 'Teller', '03451234567', 2, '1990-09-20', '23 Sector F', 'Lahore', 'Punjab', 'ayesha', 'hash456', '4567890123456', '2017-01-10'),
-('Bilal Ahmed', 'Branch Manager', '03029876543', 3, '1983-02-28', '56 Commercial Area', 'Karachi', 'Sindh', 'bilalahmed', 'hash567', '5678901234567', '2009-07-22');
+INSERT INTO Employee (name, role, contact_number, branch_id, dob, username, passhash, cnic, joining_date) VALUES
+('Ahmed Khan', 'Branch Manager', '03001234567', 1, '1980-03-15', 'ahmedkhan', 'hash123', '1234567890123', '2010-05-01'),
+('Sara Ali', 'Teller', '03019876543', 1, '1992-06-25', 'saraali', 'hash234', '2345678901234', '2015-03-20'),
+('Zain Riaz', 'Branch Manager', '03214567890', 2, '1985-10-05', 'zainriaz', 'hash345', '3456789012345', '2008-11-15'),
+('Ayesha Iqbal', 'Teller', '03451234567', 2, '1990-09-20', 'ayesha', 'hash456', '4567890123456', '2017-01-10'),
+('Bilal Ahmed', 'Branch Manager', '03029876543', 3, '1983-02-28', 'bilalahmed', 'hash567', '5678901234567', '2009-07-22');
 
 -- Update Manager IDs in Branch Table
 -- Ensure the manager_id refers to valid employee IDs
@@ -216,6 +216,7 @@ INSERT INTO AccountCustomer (customer_id, account_number) VALUES
 (2, '9876543210'),
 (3, '1122334455');
 
+
 -- Final Step: Verification Queries
 SELECT * FROM Customer;
 SELECT * FROM Account;
@@ -227,3 +228,110 @@ SELECT * FROM Deleted_Accounts;
 SELECT * FROM Loan;
 SELECT * FROM customer_view;
 SELECT * FROM account_view;
+select * from deleted_employees;
+select * from employee_logs;
+
+create table customer_logs (
+	log_id int auto_increment primary key,
+    employee_id int not null,
+    action enum('Customer created', 'Customer updated') not null,
+    timestamp datetime not null default current_timestamp,
+    customer_id bigint not null,
+    foreign key (customer_id) references customer(customer_id)
+);
+
+create table account_logs (
+	log_id int auto_increment primary key,
+    employee_id int not null,
+    action enum('Account created', 'Account closed') not null,
+    timestamp datetime not null default current_timestamp,
+    account_number varchar(20) not null
+);
+
+CREATE TABLE deleted_employees (
+    employee_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    contact_number VARCHAR(15) UNIQUE,
+    branch_id INT NOT NULL,
+    dob DATE NOT NULL,
+    cnic CHAR(13) UNIQUE NOT NULL,
+    street varchar(30),
+    city varchar(50),
+    state varchar(50),
+    joining_date date not null,
+    leaving_date datetime default current_timestamp,
+    FOREIGN KEY (branch_id) REFERENCES Branch(branch_id) ON DELETE CASCADE
+);
+
+create table employee_logs (
+	log_id int auto_increment primary key,
+    manager_id int not null,
+    action enum('Employee added', 'Employee updated', 'Employee deleted') not null,
+    timestamp datetime not null default current_timestamp,
+    employee_id bigint not null
+);
+
+create table loan_logs(
+	log_id int primary key,
+    manager_id int not null,
+    action enum('Accepted', 'Rejected') not null,
+    timestamp datetime not null default current_timestamp
+);
+
+CREATE TRIGGER customer_insert_trigger
+AFTER INSERT ON customer
+FOR EACH ROW
+INSERT INTO customer_logs (employee_id, action, customer_id)
+VALUES (@current_user_id, 'Customer created', new.customer_id);
+
+CREATE TRIGGER customer_update_trigger
+AFTER update ON customer
+FOR EACH ROW
+INSERT INTO customer_logs (employee_id, action, customer_id)
+VALUES (@current_user_id, 'Customer updated', new.customer_id);
+
+CREATE TRIGGER account_insert_trigger
+AFTER INSERT ON account
+FOR EACH ROW
+INSERT INTO account_logs (employee_id, action, account_number)
+VALUES (@current_user_id, 'Account created', new.account_number);
+
+CREATE TRIGGER account_close_trigger
+AFTER update ON account
+FOR EACH ROW
+INSERT INTO account_logs (employee_id, action, account_number)
+VALUES (@current_user_id, 'Account closed', old.account_number);
+
+CREATE TRIGGER employee_insert_trigger
+AFTER INSERT ON employee
+FOR EACH ROW
+INSERT INTO employee_logs (manager_id, action, employee_id)
+VALUES (@current_user_id, 'Employee added', new.employee_id);
+
+CREATE TRIGGER employee_update_trigger
+AFTER UPDATE ON employee
+FOR EACH ROW
+INSERT INTO employee_logs (manager_id, action, employee_id)
+VALUES (@current_user_id, 'Employee updated', new.employee_id);
+
+CREATE TRIGGER employee_after_delete_trigger
+AFTER DELETE ON employee
+FOR EACH ROW
+INSERT INTO deleted_employees (employee_id, name, role, contact_number, branch_id, dob, cnic, street, city, state, joining_date)
+values (old.employee_id, old.name, old.role, old.contact_number, old.branch_id, old.dob, old.cnic, old.street, old.city, old.state, old.joining_date);
+
+CREATE TRIGGER employee_delete_trigger
+AFTER DELETE ON employee
+FOR EACH ROW
+INSERT INTO employee_logs (manager_id, action, employee_id)
+VALUES (@current_user_id, 'Employee deleted', old.employee_id);
+
+create trigger loan_trigger
+after update on loan
+for each row
+insert into loan_logs(manager_id, action)
+values (@current_user_id, new.status);
+
+set @current_user_id = 1;
+delete from employee where employee_id = 4;

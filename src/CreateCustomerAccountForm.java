@@ -4,10 +4,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -214,6 +211,9 @@ public class CreateCustomerAccountForm {
 
 
             try{
+
+                Statement statement = connection.createStatement();
+                statement.execute("SET @current_user_id = " + Session.getUser_id());
 
                 if (existingCustomerCheckBox.isSelected()) {
                     // Existing customer logic

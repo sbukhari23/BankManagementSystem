@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class AddEmployee {
     AddEmployee() {
@@ -140,6 +141,9 @@ public class AddEmployee {
                             JOptionPane.showMessageDialog(null, "Cannot set same username for multiple employees");
                             return;
                         }
+
+                        Statement statement = connection.createStatement();
+                        statement.execute("SET @current_user_id = " + Session.getUser_id());
 
                         String addEmployee = "INSERT INTO Employee (name, cnic, role, contact_number, username, passhash, street, city, state, branch_id, dob, joining_date) " +
                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, curdate())";

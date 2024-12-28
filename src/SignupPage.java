@@ -250,8 +250,8 @@ public class SignupPage extends JFrame {
                 return false;
             }
 
-
-            if(!rs.getString("username").equals("null")) {
+            String user = rs.getString("username");
+            if(!rs.wasNull()) {
                 JOptionPane.showMessageDialog(null, "This user has already signed up");
                 return false;
             }
