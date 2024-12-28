@@ -5,10 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ManagerDashboard extends JFrame {
     private JFrame currentFrame;
@@ -76,13 +73,13 @@ public class ManagerDashboard extends JFrame {
             try {
                 new CreateCustomerAccountForm();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                ex.printStackTrace();
             }
         });
         deleteAccountButton.addActionListener(e -> EmployeeDashboard.showAccounts());
         viewEmployeesButton.addActionListener(e -> showEmployees());
         addEmployeeButton.addActionListener(e -> new AddEmployee());
-        deleteEmployeeButton.addActionListener(e -> deleteEmployee());
+        deleteEmployeeButton.addActionListener(e -> viewEmployees());
         viewLoansButton.addActionListener(e -> viewLoanApplications());
 
         // Action listener for the new Activity Log button
@@ -136,11 +133,7 @@ public class ManagerDashboard extends JFrame {
         // Add logic to open the update customer form
     }
 
-    // Method to view employees
-    private void viewEmployees() {
-        JOptionPane.showMessageDialog(this, "Viewing Employees...");
-        // Add logic to fetch and display employee data
-    }
+
 
     // Method to add an employee
     private void addEmployee() {
@@ -155,10 +148,94 @@ public class ManagerDashboard extends JFrame {
     }
 
     // Method to delete an employee
-    private void deleteEmployee() {
+    private void viewEmployees() {
         JOptionPane.showMessageDialog(this, "Deleting Employee...");
-        // Add logic to delete an employee
+        if (currentFrame != null) {
+            currentFrame.dispose(); // Close the old frame if it exists
+        }
+
+        JFrame frame = new JFrame("Employees");
+        currentFrame = frame; // Assign the current frame
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        try (Connection connection = DBConnection.getConnection()) {
+            String getEmployees = "SELECT employee_id AS 'Employee ID', name AS Name, cnic AS CNIC, role AS Role, dob AS DOB, contact_number AS Contact, street AS Street, city AS City, state AS State, joining_date AS Joining FROM Employee WHERE branch_id = " +
+                    "(SELECT branch_id FROM Employee WHERE employee_id = ?) AND employee_id <> ?;";
+            PreparedStatement stmt = connection.prepareStatement(getEmployees);
+            stmt.setInt(1, Session.getUser_id());
+            stmt.setInt(2, Session.getUser_id());
+            ResultSet rs = stmt.executeQuery();
+            DefaultTableModel tableModel = EmployeeDashboard.buildTableModel(rs);
+
+            // Create JTable with a non-editable model
+            JTable table = new JTable(tableModel) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false; // Disable editing
+                }
+            };
+
+            // Enable row selection
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            // Create "Delete" button
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener(e -> {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(frame, "Please select an employee to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Get the employee_id of the selected row
+                int employeeId = (int) table.getValueAt(selectedRow, 0);
+
+                int confirm = JOptionPane.showConfirmDialog(
+                        frame,
+                        "Are you sure you want to delete Employee ID: " + employeeId + "?",
+                        "Confirm Deletion",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    deleteEmployee(employeeId);
+                    JOptionPane.showMessageDialog(null, "Employee deleted");
+                    viewEmployees();
+                }
+            });
+
+            // Create a JPanel for the button
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(deleteButton);
+
+            // Add components to frame
+            frame.setLayout(new BorderLayout());
+            frame.add(scrollPane, BorderLayout.CENTER);
+            frame.add(buttonPanel, BorderLayout.SOUTH);
+
+            frame.setSize(800, 400);
+            frame.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    private void deleteEmployee(int employee_id) {
+        try(Connection connection = DBConnection.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.execute("SET @current_user_id = " + Session.getUser_id());
+
+            String deleteEmployee = "DELETE FROM Employee WHERE employee_id = ?";
+            PreparedStatement stmt = connection.prepareStatement(deleteEmployee);
+            stmt.setInt(1, employee_id);
+            stmt.executeUpdate();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Method to view loan applications
     private void viewLoanApplications() {

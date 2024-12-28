@@ -39,6 +39,9 @@ CREATE TABLE Employee (
     username VARCHAR(15) UNIQUE NOT NULL CHECK (username REGEXP '^[a-zA-Z0-9]{5,15}$'),
     passhash VARCHAR(255) NOT NULL,
     cnic CHAR(13) UNIQUE NOT NULL CHECK (cnic REGEXP '^[0-9]{13}$'),
+    street varchar(30),
+    city varchar(50),
+    state varchar(50),
     joining_date DATE,
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id) ON DELETE CASCADE
 );
@@ -225,3 +228,110 @@ SELECT * FROM Deleted_Accounts;
 SELECT * FROM Loan;
 SELECT * FROM customer_view;
 SELECT * FROM account_view;
+select * from deleted_employees;
+select * from employee_logs;
+
+create table customer_logs (
+	log_id int auto_increment primary key,
+    employee_id int not null,
+    action enum('Customer created', 'Customer updated') not null,
+    timestamp datetime not null default current_timestamp,
+    customer_id bigint not null,
+    foreign key (customer_id) references customer(customer_id)
+);
+
+create table account_logs (
+	log_id int auto_increment primary key,
+    employee_id int not null,
+    action enum('Account created', 'Account closed') not null,
+    timestamp datetime not null default current_timestamp,
+    account_number varchar(20) not null
+);
+
+CREATE TABLE deleted_employees (
+    employee_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    contact_number VARCHAR(15) UNIQUE,
+    branch_id INT NOT NULL,
+    dob DATE NOT NULL,
+    cnic CHAR(13) UNIQUE NOT NULL,
+    street varchar(30),
+    city varchar(50),
+    state varchar(50),
+    joining_date date not null,
+    leaving_date datetime default current_timestamp,
+    FOREIGN KEY (branch_id) REFERENCES Branch(branch_id) ON DELETE CASCADE
+);
+
+create table employee_logs (
+	log_id int auto_increment primary key,
+    manager_id int not null,
+    action enum('Employee added', 'Employee updated', 'Employee deleted') not null,
+    timestamp datetime not null default current_timestamp,
+    employee_id bigint not null
+);
+
+create table loan_logs(
+	log_id int primary key,
+    manager_id int not null,
+    action enum('Accepted', 'Rejected') not null,
+    timestamp datetime not null default current_timestamp
+);
+
+CREATE TRIGGER customer_insert_trigger
+AFTER INSERT ON customer
+FOR EACH ROW
+INSERT INTO customer_logs (employee_id, action, customer_id)
+VALUES (@current_user_id, 'Customer created', new.customer_id);
+
+CREATE TRIGGER customer_update_trigger
+AFTER update ON customer
+FOR EACH ROW
+INSERT INTO customer_logs (employee_id, action, customer_id)
+VALUES (@current_user_id, 'Customer updated', new.customer_id);
+
+CREATE TRIGGER account_insert_trigger
+AFTER INSERT ON account
+FOR EACH ROW
+INSERT INTO account_logs (employee_id, action, account_number)
+VALUES (@current_user_id, 'Account created', new.account_number);
+
+CREATE TRIGGER account_close_trigger
+AFTER update ON account
+FOR EACH ROW
+INSERT INTO account_logs (employee_id, action, account_number)
+VALUES (@current_user_id, 'Account closed', old.account_number);
+
+CREATE TRIGGER employee_insert_trigger
+AFTER INSERT ON employee
+FOR EACH ROW
+INSERT INTO employee_logs (manager_id, action, employee_id)
+VALUES (@current_user_id, 'Employee added', new.employee_id);
+
+CREATE TRIGGER employee_update_trigger
+AFTER UPDATE ON employee
+FOR EACH ROW
+INSERT INTO employee_logs (manager_id, action, employee_id)
+VALUES (@current_user_id, 'Employee updated', new.employee_id);
+
+CREATE TRIGGER employee_after_delete_trigger
+AFTER DELETE ON employee
+FOR EACH ROW
+INSERT INTO deleted_employees (employee_id, name, role, contact_number, branch_id, dob, cnic, street, city, state, joining_date)
+values (old.employee_id, old.name, old.role, old.contact_number, old.branch_id, old.dob, old.cnic, old.street, old.city, old.state, old.joining_date);
+
+CREATE TRIGGER employee_delete_trigger
+AFTER DELETE ON employee
+FOR EACH ROW
+INSERT INTO employee_logs (manager_id, action, employee_id)
+VALUES (@current_user_id, 'Employee deleted', old.employee_id);
+
+create trigger loan_trigger
+after update on loan
+for each row
+insert into loan_logs(manager_id, action)
+values (@current_user_id, new.status);
+
+set @current_user_id = 1;
+delete from employee where employee_id = 4;

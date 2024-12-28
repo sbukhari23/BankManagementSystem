@@ -218,6 +218,8 @@ public class EmployeeDashboard extends JFrame {
 
         updateButton.addActionListener(e -> {
             try (Connection connection = DBConnection.getConnection()) {
+                Statement statement = connection.createStatement();
+                statement.execute("SET @current_user_id = " + Session.getUser_id());
                 StringBuilder updateQuery = new StringBuilder("UPDATE customer SET ");
                 boolean changesMade = false;
 
@@ -395,6 +397,8 @@ public class EmployeeDashboard extends JFrame {
 
     private static void closeAccount(String account_number) {
         try(Connection connection = DBConnection.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.execute("SET @current_user_id = " + Session.getUser_id());
             String callProcedure = "CALL close_account(?)";
             PreparedStatement stmt = connection.prepareStatement(callProcedure);
             stmt.setString(1, account_number);
