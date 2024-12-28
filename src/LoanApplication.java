@@ -53,7 +53,7 @@ public class LoanApplication extends JFrame {
         formPanel.add(purposeDropdown);
 
         // Dropdown for loan duration
-        String[] loanDurations = {"select duration", "6 months", "1 year"};
+        String[] loanDurations = {"select duration", "6 months", "12 months"};
         JComboBox<String> durationDropdown = new JComboBox<>(loanDurations);
         durationDropdown.setFont(fieldFont);
         durationDropdown.setBounds(100, 160, 200, 30); // Adjust the position and size as needed
@@ -115,13 +115,14 @@ public class LoanApplication extends JFrame {
             }
 
             try(Connection connection = DBConnection.getConnection()) {
-                String insertLoan = "INSERT INTO Loan (loan_amount, loan_purpose, remaining_amount, customer_id) " +
-                        "VALUES (?, ?, ?, ?)";
+                String insertLoan = "INSERT INTO Loan (loan_amount, loan_duration, loan_purpose, remaining_amount, customer_id) " +
+                        "VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement stmt = connection.prepareStatement(insertLoan);
                 stmt.setInt(1, Integer.parseInt(amountText));
-                stmt.setString(2, purpose);
-                stmt.setInt(3, Integer.parseInt(amountText));
-                stmt.setInt(4, Session.getUser_id());
+                stmt.setString(2, duration);
+                stmt.setString(3, purpose);
+                stmt.setInt(4, Integer.parseInt(amountText));
+                stmt.setInt(5, Session.getUser_id());
                 stmt.executeUpdate();
             }
             catch(Exception ex) {

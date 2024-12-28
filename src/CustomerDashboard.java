@@ -98,7 +98,7 @@ public class CustomerDashboard extends JFrame {
         // Apply for Loan Button
         JButton applyForLoanButton = (JButton) applyForLoanPanel.getComponent(0);
         applyForLoanButton.addActionListener(e -> {
-            new LoanApplicationNew();
+            new LoanApplication();
         });
 
         buttonsPanel.add(applyForLoanPanel);
