@@ -1,0 +1,181 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Objects;
+
+public class Transaction {
+    // Confirm pin before transaction (Transaction class)
+    private static boolean validatePin(String pin) {
+        boolean isValid = false;
+        int customerID = Session.getCustomer_id();
+        try(Connection connection = DBConnection.getConnection()) {
+            String getPin = "SELECT transaction_pin from customer WHERE customer_id = ?";
+
+            PreparedStatement stmt = connection.prepareStatement(getPin);
+            stmt.setInt(1, customerID);
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                String actualPin = rs.getString("transaction_pin");
+                isValid = pin.equals(actualPin);
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Failed to connect ot database");
+        }
+        return isValid;
+    }
+
+    //Handle transaction by reflecting changes on database
+    private static void transactionHandler(String to_accountNo, int amount) {
+        if(Objects.equals(to_accountNo, Session.getAccount_no())) {
+            // Display cannot send money to yourself
+        }
+        try(Connection connection = DBConnection.getConnection()) {
+            String validate_to_accountNo = "SELECT * FROM Account WHERE account_number = ?";
+            PreparedStatement stmt = connection.prepareStatement(validate_to_accountNo);
+            stmt.setString(1, to_accountNo);
+            ResultSet rs = stmt.executeQuery();
+
+            if(!rs.next()) {
+                //Display account number does not exist
+                return;
+            }
+
+            int balance = getBalance(Session.getAccount_no());
+
+            if(balance < amount) {
+                //Display Insufficient balance
+                return;
+            }
+
+            String updateBalance = "UPDATE Account SET balance = balance - ? WHERE account_number = ?," +
+                    " SET balance = balance + ? WHERE account_number = ?";
+
+            stmt = connection.prepareStatement(updateBalance);
+            stmt.setInt(1, amount);
+            stmt.setString(2, Session.getAccount_no());
+            stmt.setInt(3, amount);
+            stmt.setString(2, to_accountNo);
+
+            stmt.executeQuery();
+
+            String insertTransaction = "INSERT INTO Transaction(to_account_number, from_account_no, amount)" +
+                    "VALUES (?, ?, ?)";
+            stmt = connection.prepareStatement(insertTransaction);
+            stmt.setString(1, to_accountNo);
+            stmt.setString(2, Session.getAccount_no());
+            stmt.setInt(3, amount);
+
+            //Display Transaction Successful
+        }
+        catch(Exception e) {
+            System.out.println("Error! Cannot connect to database");
+        }
+    }
+
+    // Function to get balance of an account
+    private static int getBalance(String account_no) {
+        try(Connection connection = DBConnection.getConnection()) {
+            String getBalance = "SELECT balance from Account WHERE account_number = ?";
+            PreparedStatement stmt = connection.prepareStatement(getBalance);
+            stmt.setString(1, account_no);
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.getInt("balance");
+        }
+        catch(Exception e) {
+            // Display unable to connect to server
+        }
+        return -1;
+    }
+}
+
+
+##################################################################################################
+
+// Confirm pin before transaction
+    private static boolean validatePin(String pin) {
+        boolean isValid = false;
+        int customerID = Session.getCustomer_id();
+        try(Connection connection = DBConnection.getConnection()) {
+            String getPin = "SELECT transaction_pin from customer WHERE customer_id = ?";
+
+            PreparedStatement stmt = connection.prepareStatement(getPin);
+            stmt.setInt(1, customerID);
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                String actualPin = rs.getString("transaction_pin");
+                isValid = pin.equals(actualPin);
+            }
+        }
+        catch(Exception e) {
+            System.out.println("Failed to connect ot database");
+        }
+        return isValid;
+    }
+
+    //Handle transaction by reflecting changes on database
+    private static void transactionHandler(String to_accountNo, int amount) {
+        if(to_accountNo.equals(Session.getAccount_no())) {
+            // Display cannot send money to yourself
+        }
+        try(Connection connection = DBConnection.getConnection()) {
+            String validate_to_accountNo = "SELECT * FROM Account WHERE account_number = ?";
+            PreparedStatement stmt = connection.prepareStatement(validate_to_accountNo);
+            stmt.setString(1, to_accountNo);
+            ResultSet rs = stmt.executeQuery();
+
+            if(!rs.next()) {
+                //Display account number does not exist
+                return;
+            }
+
+            int balance = getBalance(Session.getAccount_no());
+
+            if(balance < amount) {
+                //Display Insufficient balance
+                return;
+            }
+
+            String updateBalance = "UPDATE Account SET balance = balance - ? WHERE account_number = ?," +
+                    " SET balance = balance + ? WHERE account_number = ?";
+
+            stmt = connection.prepareStatement(updateBalance);
+            stmt.setInt(1, amount);
+            stmt.setString(2, Session.getAccount_no());
+            stmt.setInt(3, amount);
+            stmt.setString(2, to_accountNo);
+
+            stmt.executeQuery();
+
+            String insertTransaction = "INSERT INTO Transaction(to_account_number, from_account_no, amount)" +
+                    "VALUES (?, ?, ?)";
+            stmt = connection.prepareStatement(insertTransaction);
+            stmt.setString(1, to_accountNo);
+            stmt.setString(2, Session.getAccount_no());
+            stmt.setInt(3, amount);
+
+            //Display Transaction Successful
+        }
+        catch(Exception e) {
+            System.out.println("Error! Cannot connect to database");
+        }
+    }
+
+    // Function to get balance of an account
+    private static int getBalance(String account_no) {
+        try(Connection connection = DBConnection.getConnection()) {
+            String getBalance = "SELECT balance from Account WHERE account_number = ?";
+            PreparedStatement stmt = connection.prepareStatement(getBalance);
+            stmt.setString(1, account_no);
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.getInt("balance");
+        }
+        catch(Exception e) {
+            // Display unable to connect to server
+        }
+        return -1;
+    }
