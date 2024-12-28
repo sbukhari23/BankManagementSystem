@@ -73,11 +73,10 @@ public class EmployeeDashboard extends JFrame {
 
         // Add action listeners to the buttons
         viewCustomersButton.addActionListener(
-                e -> {JOptionPane.showMessageDialog(this, "Showing customers...");
+                e -> {
                 showCustomers();}
         );
         createCustomerButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Creating Account...");
             try {
                 new CreateCustomerAccountForm();
             } catch (SQLException ex) {
@@ -85,7 +84,7 @@ public class EmployeeDashboard extends JFrame {
             }
         });
         deleteAccountsButton.addActionListener(
-                e -> {JOptionPane.showMessageDialog(this, "Delete accounts...");
+                e -> {
                 showAccounts();}
         );
 
@@ -381,6 +380,10 @@ public class EmployeeDashboard extends JFrame {
 
             // Create Delete button
             JButton deleteButton = new JButton("Delete");
+            deleteButton.setFocusPainted(false);
+            deleteButton.setBackground(new Color(232, 3, 3));
+            deleteButton.setForeground(Color.WHITE);
+            deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             deleteButton.addActionListener(e -> {
                 // Leave the ActionListener empty for further logic
                 closeAccount(account_number[0]);

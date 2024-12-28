@@ -142,8 +142,12 @@ public class ManagerDashboard extends JFrame {
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             JScrollPane scrollPane = new JScrollPane(table);
 
-            // Create "Delete" button
+            // Create Delete button
             JButton deleteButton = new JButton("Delete");
+            deleteButton.setFocusPainted(false);
+            deleteButton.setBackground(new Color(232, 3, 3));
+            deleteButton.setForeground(Color.WHITE);
+            deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             deleteButton.addActionListener(e -> {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow == -1) {
