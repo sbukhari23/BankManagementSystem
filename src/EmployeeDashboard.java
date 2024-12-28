@@ -102,6 +102,8 @@ public class EmployeeDashboard extends JFrame {
         JFrame frame = new JFrame("Customers");
         currentFrame = frame; // Assign the current frame
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        currentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        currentFrame.setExtendedState(MAXIMIZED_BOTH);
 
         try (Connection connection = DBConnection.getConnection()) {
             String getCustomers = "SELECT * FROM customer_view";
@@ -346,6 +348,8 @@ public class EmployeeDashboard extends JFrame {
         JFrame frame = new JFrame("Accounts");
         currentFrame = frame; // Assign the current frame
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        currentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        currentFrame.setExtendedState(MAXIMIZED_BOTH);
 
         try (Connection connection = DBConnection.getConnection()) {
             String getAccounts = "SELECT * FROM account_view";

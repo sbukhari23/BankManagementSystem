@@ -109,47 +109,9 @@ public class ManagerDashboard extends JFrame {
         return button;
     }
 
-    // Method to display customer accounts
-    private void viewCustomerAccounts() {
-        JOptionPane.showMessageDialog(this, "Viewing Customer Accounts...");
-        // Add logic to fetch and display customer data
-    }
-
-    // Method to create a customer account
-    private void createCustomerAccount() {
-        JOptionPane.showMessageDialog(this, "Creating Customer Account...");
-        // Add logic to open the create customer form
-    }
-
-    // Method to delete a customer account
-    private void deleteCustomerAccount() {
-        JOptionPane.showMessageDialog(this, "Deleting Customer Account...");
-        // Add logic to delete the customer account
-    }
-
-    // Method to update a customer account
-    private void updateCustomerAccount() {
-        JOptionPane.showMessageDialog(this, "Updating Customer Account...");
-        // Add logic to open the update customer form
-    }
-
-
-
-    // Method to add an employee
-    private void addEmployee() {
-        JOptionPane.showMessageDialog(this, "Adding Employee...");
-        // Add logic to open the add employee form
-    }
-
-    // Method to update employee details
-    private void updateEmployee() {
-        JOptionPane.showMessageDialog(this, "Updating Employee...");
-        // Add logic to open the update employee form
-    }
 
     // Method to delete an employee
     private void viewEmployees() {
-        JOptionPane.showMessageDialog(this, "Deleting Employee...");
         if (currentFrame != null) {
             currentFrame.dispose(); // Close the old frame if it exists
         }
@@ -157,6 +119,7 @@ public class ManagerDashboard extends JFrame {
         JFrame frame = new JFrame("Employees");
         currentFrame = frame; // Assign the current frame
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
 
         try (Connection connection = DBConnection.getConnection()) {
             String getEmployees = "SELECT employee_id AS 'Employee ID', name AS Name, cnic AS CNIC, role AS Role, dob AS DOB, contact_number AS Contact, street AS Street, city AS City, state AS State, joining_date AS Joining FROM Employee WHERE branch_id = " +
@@ -214,7 +177,8 @@ public class ManagerDashboard extends JFrame {
             frame.add(scrollPane, BorderLayout.CENTER);
             frame.add(buttonPanel, BorderLayout.SOUTH);
 
-            frame.setSize(800, 400);
+
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -259,6 +223,8 @@ public class ManagerDashboard extends JFrame {
         JFrame frame = new JFrame("Employees");
         currentFrame = frame; // Assign the current frame
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        currentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        currentFrame.setExtendedState(MAXIMIZED_BOTH);
 
         try (Connection connection = DBConnection.getConnection()) {
             String getEmployees = "SELECT employee_id AS 'Employee ID', name AS Name, cnic AS CNIC, role AS Role, dob AS DOB, contact_number AS Contact, street AS Street, city AS City, state AS State, joining_date AS Joining FROM Employee WHERE branch_id = " +
