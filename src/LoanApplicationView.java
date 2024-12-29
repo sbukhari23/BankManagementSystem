@@ -16,7 +16,7 @@ public class LoanApplicationView {
     private JFrame currentFrame;
     private DefaultTableModel tableModel;
 
-    public void showLoanApplications() {
+    public LoanApplicationView() {
         if (currentFrame != null) {
             currentFrame.dispose();
         }
@@ -268,7 +268,7 @@ public class LoanApplicationView {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             LoanApplicationView view = new LoanApplicationView();
-            view.showLoanApplications();
+//            view.showLoanApplications();
         });
     }
 }

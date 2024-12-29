@@ -128,7 +128,7 @@ public class AddEmployee extends JFrame {
 
                 if (name.isEmpty() || cnic.isEmpty() || role.isEmpty() || dob.isEmpty() || contact.isEmpty() ||
                         username.isEmpty() || password.isEmpty() || street.isEmpty() || city.isEmpty() || state.isEmpty()) {
-                    messageLabel.setText("All fields are required.");
+                    JOptionPane.showMessageDialog(null, "All fields are required.");
                     return;
                 }
 
@@ -138,7 +138,7 @@ public class AddEmployee extends JFrame {
                 }
 
                 if (!cnic.matches("\\d{13}")) {
-                    messageLabel.setText("CNIC must be a 13-digit numeric string.");
+                    JOptionPane.showMessageDialog(null, "CNIC must be a 13-digit numeric string.");
                     return;
                 }
 

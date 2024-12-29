@@ -18,7 +18,7 @@ public class ActivityLogsDashboard extends JFrame {
         // Set JFrame properties
         setTitle("Activity Logs Dashboard");
         setSize(screenWidth / 2, screenHeight / 2);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -76,7 +76,7 @@ public class ActivityLogsDashboard extends JFrame {
         accountLogBtn.addActionListener(e -> {
             // Add logic to show account logs
             JOptionPane.showMessageDialog(null, "Opening Account Logs...");
-            String query = "SELECT al.employee_id, al.action, DATE_FORMAT(al.timestamp, '%Y-%m-%d %H:%i:%s'), al.account_number, a.account_title FROM Account_logs al NATURAL JOIN Account a WHERE employee_id" +
+            String query = "SELECT al.employee_id, al.action, DATE_FORMAT(al.timestamp, '%Y-%m-%d %H:%i:%s') AS Time, al.account_number, a.account_title FROM Account_logs al NATURAL JOIN Account a WHERE employee_id" +
                     " in (select employee_id from employee where branch_id = (select branch_id from employee where employee_id = ?))";
 
             showLog("Account Logs", query);

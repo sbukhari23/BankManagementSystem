@@ -4,6 +4,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoanApplication extends JFrame {
 
@@ -104,9 +105,6 @@ public class LoanApplication extends JFrame {
                 if (purpose == null || purpose.equals("select loan purpose")) {
                     throw new IllegalArgumentException("You have to select a loan purpose.");
                 }
-
-                // If all validations pass
-                JOptionPane.showMessageDialog(this, "Loan application submitted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Invalid loan amount. Please enter a numeric value.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -115,6 +113,16 @@ public class LoanApplication extends JFrame {
             }
 
             try(Connection connection = DBConnection.getConnection()) {
+                String check = "SELECT loan_id FROM Loan WHERE customer_id = ?";
+                PreparedStatement statement = connection.prepareStatement(check);
+                statement.setInt(1, Session.getUser_id());
+                ResultSet rs = statement.executeQuery();
+
+                if(rs.next()) {
+                    JOptionPane.showMessageDialog(null, "You have already submitted for Loan");
+                    return;
+                }
+
                 String insertLoan = "INSERT INTO Loan (loan_amount, loan_duration, loan_purpose, remaining_amount, customer_id) " +
                         "VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement stmt = connection.prepareStatement(insertLoan);
@@ -124,6 +132,8 @@ public class LoanApplication extends JFrame {
                 stmt.setInt(4, Integer.parseInt(amountText));
                 stmt.setInt(5, Session.getUser_id());
                 stmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(null, "Loan submitted successfully");
             }
             catch(Exception ex) {
                 ex.printStackTrace();
