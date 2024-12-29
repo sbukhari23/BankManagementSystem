@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
@@ -218,20 +216,6 @@ public class ManagerDashboard extends JFrame {
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    // Method to view loan applications
-    private void viewLoanApplications() {
-        JOptionPane.showMessageDialog(this, "Viewing Loan Applications...");
-        // Add logic to fetch and display loan applications
-    }
-
-    // Method to show activity log
-    private void showActivityLog() {
-        // This is where you would fetch and display the activity log
-        JOptionPane.showMessageDialog(this, "Displaying Activity Log...");
-        // Add logic to fetch and display the activity log
     }
 
 

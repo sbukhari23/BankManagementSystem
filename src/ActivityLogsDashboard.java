@@ -70,12 +70,11 @@ public class ActivityLogsDashboard extends JFrame {
             String query = "SELECT cl.employee_id AS 'Employee ID', cl.action AS Action, DATE_FORMAT(cl.timestamp, '%Y-%m-%d %H:%i:%s') AS Time" +
                     ", cl.customer_id AS 'Customer ID', c.name AS Name, c.cnic AS CNIC FROM customer_logs cl NATURAL JOIN customer c where employee_id in (select employee_id from " +
                     "employee where branch_id = (select branch_id from employee where employee_id = ?))";
-            showLog("Employee Log", query);
+            showLog("Customer Log", query);
         });
 
         accountLogBtn.addActionListener(e -> {
             // Add logic to show account logs
-            JOptionPane.showMessageDialog(null, "Opening Account Logs...");
             String query = "SELECT al.employee_id, al.action, DATE_FORMAT(al.timestamp, '%Y-%m-%d %H:%i:%s') AS Time, al.account_number, a.account_title FROM Account_logs al NATURAL JOIN Account a WHERE employee_id" +
                     " in (select employee_id from employee where branch_id = (select branch_id from employee where employee_id = ?))";
 
@@ -84,14 +83,12 @@ public class ActivityLogsDashboard extends JFrame {
 
         employeeLogBtn.addActionListener(e -> {
             // Add logic to show employee logs
-            JOptionPane.showMessageDialog(null, "Opening Employee Logs...");
             String query = "SELECT action AS Action, DATE_FORMAT(timestamp, '%Y-%m-%d %H:%i:%s') AS Timestamp, employee_id AS 'Employee ID' FROM employee_logs WHERE manager_id = ?";
             showLog("Employee Log", query);
         });
 
         loanLogBtn.addActionListener(e -> {
             // Add logic to show loan logs
-            JOptionPane.showMessageDialog(null, "Opening Loan Logs...");
             String query = "SELECT ll.loan_id, ll.action, DATE_FORMAT(ll.timestamp, '%Y-%m-%d %H:%i:%s') AS Timestamp, l.loan_amount, l.loan_duration, c.name, c.cnic FROM Loan_logs ll" +
                     " NATURAL JOIN Loan l NATURAL JOIN Customer c WHERE manager_id = ?";
             showLog("Loan Log", query);
