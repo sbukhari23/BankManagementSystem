@@ -187,6 +187,7 @@ class Transaction extends JFrame {
             } catch (Exception rollbackEx) {
                 JOptionPane.showMessageDialog(null, "Rollback failed.");
             }
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Transaction failed. Please try again.");
         } finally {
             if (connection != null) {
