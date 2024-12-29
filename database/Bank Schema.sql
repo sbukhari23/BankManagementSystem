@@ -284,14 +284,6 @@ FOR EACH ROW
 INSERT INTO customer_logs (employee_id, action, customer_id)
 VALUES (@current_user_id, 'Customer created', new.customer_id);
 
-########### 
-drop trigger if exists customer_update_trigger;
-CREATE TRIGGER customer_update_trigger
-AFTER update ON customer
-FOR EACH ROW
-INSERT INTO customer_logs (employee_id, action, customer_id)
-VALUES (@current_user_id, 'Customer updated', new.customer_id);
-
 CREATE TRIGGER account_insert_trigger
 AFTER INSERT ON account
 FOR EACH ROW
