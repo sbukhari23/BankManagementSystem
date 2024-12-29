@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 
 public class EmployeeDashboard extends JFrame {
@@ -307,10 +309,24 @@ public class EmployeeDashboard extends JFrame {
         JButton button = new JButton(text);
         button.setFont(new Font("Segoe UI", Font.BOLD, 16));
         button.setBounds(100, yPos, 250, 40);
-        button.setFocusPainted(false);
-        button.setBackground(new Color(0, 102, 204));
+        button.setBackground(new Color(51, 153, 255));
         button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // Add hover effect
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(new Color(27, 143, 255));
+            }
+        });
         return button;
     }
 
