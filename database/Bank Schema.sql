@@ -227,9 +227,6 @@ SELECT * FROM Deleted_Accounts;
 SELECT * FROM Loan;
 SELECT * FROM customer_view;
 SELECT * FROM account_view;
-select * from deleted_employees;
-select * from employee_logs;
-select * from loan_logs;
 
 create table customer_logs (
 	log_id int auto_increment primary key,
@@ -271,7 +268,7 @@ create table employee_logs (
     timestamp datetime not null default current_timestamp,
     employee_id bigint not null
 );
-drop trigger loan_trigger;
+ drop trigger if exists loan_trigger;
 create table loan_logs(
 	log_id int auto_increment primary key,
     manager_id int not null,
@@ -286,14 +283,6 @@ AFTER INSERT ON customer
 FOR EACH ROW
 INSERT INTO customer_logs (employee_id, action, customer_id)
 VALUES (@current_user_id, 'Customer created', new.customer_id);
-
-########### 
-drop trigger customer_update_trigger;
-CREATE TRIGGER customer_update_trigger
-AFTER update ON customer
-FOR EACH ROW
-INSERT INTO customer_logs (employee_id, action, customer_id)
-VALUES (@current_user_id, 'Customer updated', new.customer_id);
 
 CREATE TRIGGER account_insert_trigger
 AFTER INSERT ON account
@@ -336,3 +325,7 @@ after update on loan
 for each row
 insert into loan_logs(manager_id, loan_id, action)
 values (@current_user_id, new.loan_id, new.loan_application_status);
+
+select * from deleted_employees;
+select * from employee_logs;
+select * from loan_logs;
