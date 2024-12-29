@@ -4,6 +4,11 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import static java.awt.Frame.MAXIMIZED_BOTH;
 
@@ -23,11 +28,34 @@ public class LoanApplicationView {
 
         // Sample data for the table
         String[] columnNames = {"Loan ID", "Amount", "Duration", "Purpose", "Status", "Customer ID", "Actions"};
-        Object[][] data = {
-                {1, 50000.0, 12, "Home", "Pending", 101, ""},
-                {2, 20000.0, 6, "Car", "Pending", 102, ""},
-                {3, 15000.0, 3, "Personal", "Pending", 103, ""},
-        };
+        ArrayList<Object[]> rows = new ArrayList<>();
+
+        try(Connection connection = DBConnection.getConnection()) {
+            String getLoans = "SELECT loan_id, loan_amount, loan_duration, loan_purpose, loan_application_status, customer_id" +
+                    " FROM Loan";
+            PreparedStatement stmt = connection.prepareStatement(getLoans);
+            ResultSet rs = stmt.executeQuery();
+            int columns = 7;
+
+            while(rs.next()) {
+                Object[] row = new Object[columns];
+                for(int i = 0; i < columns; i++) {
+                    if(i == 6) {
+                        row[i] = "";
+                    }
+                    else {
+                        row[i] = rs.getObject(i+1);
+                    }
+                }
+
+                rows.add(row);
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        Object[][] data = rows.toArray(new Object[0][0]);
 
         tableModel = new DefaultTableModel(data, columnNames) {
             @Override
@@ -57,7 +85,7 @@ public class LoanApplicationView {
         }
 
         table.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
-        table.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(new JCheckBox()));
+        table.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(new JCheckBox(), table));
 
         // Add mouse listener for double-click events
         table.addMouseListener(new MouseAdapter() {
@@ -65,7 +93,7 @@ public class LoanApplicationView {
             public void mouseClicked(MouseEvent evt) {
                 int row = table.getSelectedRow();
                 if (evt.getClickCount() == 2 && row >= 0) {
-                    int customerId = (int) table.getValueAt(row, 5);
+                    long customerId = (long) table.getValueAt(row, 5);
                     showCustomerDetails(customerId);
                 }
             }
@@ -102,7 +130,7 @@ public class LoanApplicationView {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
-            if ("Pending".equals(table.getValueAt(row, 4))) {
+            if ("pending".equals(table.getValueAt(row, 4))) {
                 acceptButton.setEnabled(true);
                 rejectButton.setEnabled(true);
             } else {
@@ -116,13 +144,15 @@ public class LoanApplicationView {
 
     // Custom ButtonEditor for the Actions column
     class ButtonEditor extends DefaultCellEditor {
+        private JTable table;
         private JPanel panel;
         private JButton acceptButton;
         private JButton rejectButton;
         private int currentRow;
 
-        public ButtonEditor(JCheckBox checkBox) {
+        public ButtonEditor(JCheckBox checkBox, JTable table) {
             super(checkBox);
+            this.table = table;
             panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
 
             // Create buttons with smaller preferred size
@@ -141,19 +171,34 @@ public class LoanApplicationView {
             acceptButton.setPreferredSize(buttonSize);
             rejectButton.setPreferredSize(buttonSize);
 
-            acceptButton.addActionListener(e -> handleAction("Accepted"));
-            rejectButton.addActionListener(e -> handleAction("Rejected"));
+            acceptButton.addActionListener(e -> {
+                int row = table.getEditingRow();
+                handleAction(row, "accepted");
+            });
+            rejectButton.addActionListener(e -> {
+                int row = table.getEditingRow();
+                handleAction(row, "rejected");
+            });
 
             panel.add(acceptButton);
             panel.add(rejectButton);
         }
 
-        private void handleAction(String action) {
-            tableModel.setValueAt(action, currentRow, 4);
-            fireEditingStopped();
-            JOptionPane.showMessageDialog(currentFrame,
-                    "Loan application " + tableModel.getValueAt(currentRow, 0) +
-                            " has been " + action.toLowerCase());
+        private void handleAction(int row, String action) {
+            try(Connection connection = DBConnection.getConnection()) {
+                Statement statement = connection.createStatement();
+                statement.execute("SET @current_user_id = " + Session.getUser_id());
+
+                String acceptLoan = "UPDATE Loan SET loan_application_status = "+ action + "WHERE loan_id = ?";
+                PreparedStatement stmt = connection.prepareStatement(acceptLoan);
+                stmt.setInt(1, (int)tableModel.getValueAt(row, 0));
+                stmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(null, "Loan " + action);
+            }
+            catch(Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         @Override
@@ -177,17 +222,30 @@ public class LoanApplicationView {
         }
     }
 
-    private void showCustomerDetails(int customerId) {
+    private void showCustomerDetails(long customerId) {
         // Placeholder for customer details function
         JDialog dialog = new JDialog(currentFrame, "Customer Details", true);
         dialog.setLayout(new BorderLayout());
 
-        //Replace with database queries
-        String customerDetails = "Customer ID: " + customerId + "\n" +
-                "Name: John Doe\n" +
-                "Email: john.doe@email.com\n" +
-                "Phone: (555) 123-4567\n" +
-                "Address: 123 Main St\n";
+        String customerDetails = "";
+        try (Connection connection = DBConnection.getConnection()) {
+            String getDetails = "SELECT customer_id , name, cnic, contact_number, " +
+                    "email, street, city, state FROM Customer WHERE " +
+                    "customer_id = ?";
+            PreparedStatement stmt = connection.prepareStatement(getDetails);
+            stmt.setLong(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            customerDetails = "Customer ID: " + rs.getInt("customer_id") + "\n" +
+                    "Name: " + rs.getString("name") + "\n" + "CNIC: " + rs.getString("cnic") + "\n" +
+                    "Email: " + rs.getString("email") + "\n" +
+                    "Phone: " + rs.getString("contact_number") + "\n" +
+                    "Address: " + rs.getString("street") + ", " + rs.getString("city") + ", " +
+                    rs.getString("state");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
 
         JTextArea detailsArea = new JTextArea(customerDetails);
         detailsArea.setEditable(false);

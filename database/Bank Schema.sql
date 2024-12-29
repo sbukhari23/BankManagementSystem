@@ -87,7 +87,7 @@ CREATE TABLE Loan (
     loan_id INT AUTO_INCREMENT PRIMARY KEY,
     loan_amount DECIMAL(10, 2) NOT NULL,
     loan_date_time DATETIME NOT NULL DEFAULT current_timestamp,
-    loan_duration INT NOT NULL, 
+    loan_duration varchar(20) NOT NULL, 
     loan_purpose ENUM('home', 'car', 'personal', 'educational', 'corporate', 'others') NOT NULL,
     remaining_amount DECIMAL(10, 2) NOT NULL,
     loan_application_status ENUM('accepted', 'rejected', 'pending') NOT NULL DEFAULT 'pending',
@@ -216,7 +216,6 @@ INSERT INTO AccountCustomer (customer_id, account_number) VALUES
 (2, '9876543210'),
 (3, '1122334455');
 
-
 -- Final Step: Verification Queries
 SELECT * FROM Customer;
 SELECT * FROM Account;
@@ -230,6 +229,7 @@ SELECT * FROM customer_view;
 SELECT * FROM account_view;
 select * from deleted_employees;
 select * from employee_logs;
+select * from loan_logs;
 
 create table customer_logs (
 	log_id int auto_increment primary key,
@@ -271,12 +271,14 @@ create table employee_logs (
     timestamp datetime not null default current_timestamp,
     employee_id bigint not null
 );
-
+drop trigger loan_trigger;
 create table loan_logs(
-	log_id int primary key,
+	log_id int auto_increment primary key,
     manager_id int not null,
+    loan_id int not null,
     action enum('Accepted', 'Rejected') not null,
-    timestamp datetime not null default current_timestamp
+    timestamp datetime not null default current_timestamp,
+    foreign key (loan_id) references loan(loan_id)
 );
 
 CREATE TRIGGER customer_insert_trigger
@@ -285,6 +287,8 @@ FOR EACH ROW
 INSERT INTO customer_logs (employee_id, action, customer_id)
 VALUES (@current_user_id, 'Customer created', new.customer_id);
 
+########### 
+drop trigger customer_update_trigger;
 CREATE TRIGGER customer_update_trigger
 AFTER update ON customer
 FOR EACH ROW
@@ -330,8 +334,13 @@ VALUES (@current_user_id, 'Employee deleted', old.employee_id);
 create trigger loan_trigger
 after update on loan
 for each row
-insert into loan_logs(manager_id, action)
-values (@current_user_id, new.status);
+insert into loan_logs(manager_id, loan_id, action)
+values (@current_user_id, new.loan_id, new.loan_application_status);
 
 set @current_user_id = 1;
 delete from employee where employee_id = 4;
+select * from customer_logs;
+
+create or replace view customer_log_view as
+select employee_id, action, timestamp, customer_id from customer_logs where employee_id in (select employee_id from
+employee where branch_id = (select branch_id from employee where employee_id = @current_user_id)); 
