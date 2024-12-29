@@ -139,11 +139,13 @@ BEGIN
 
     INSERT INTO Deleted_Accounts
     SELECT * FROM AccountCustomer WHERE account_number = acc_number;
-
+    
+    INSERT INTO Account_logs (employee_id, action, account_number)
+    VALUES (@current_user_id, 'Account closed', acc_number);
     DELETE FROM AccountCustomer WHERE account_number = acc_number;
 END //
 DELIMITER ;
-
+select * from account_logs;
 -- Step 5: Create Functions
 DELIMITER //
 CREATE FUNCTION get_branch_id (emp_id INT)
