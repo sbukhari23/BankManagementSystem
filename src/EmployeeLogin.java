@@ -33,6 +33,12 @@ public class EmployeeLogin extends JFrame {
         loginPanel.setBackground(new Color(255, 255, 255, 216)); // Semi-transparent white
         loginPanel.setLayout(null);
 
+        // Dashboard title
+        JLabel titleLabel = new JLabel("Employee Login", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setBounds(50, 125, 300, 30);
+        loginPanel.add(titleLabel);
+
         // Center the login panel
         int panelWidth = 400;
         int panelHeight = 450;
@@ -48,33 +54,19 @@ public class EmployeeLogin extends JFrame {
 
         // Username text field with placeholder
         JTextField usernameField = createTextField("Enter your username", 200, 30);
-        usernameField.setBounds(100, 120, 200, 30);
+        usernameField.setBounds(100, 200, 200, 30);
         loginPanel.add(usernameField);
 
         // Password text field with placeholder
         JPasswordField passwordField = createPasswordField("Enter your password", 200, 30);
-        passwordField.setBounds(100, 190, 200, 30);
+        passwordField.setBounds(100, 250, 200, 30);
         loginPanel.add(passwordField);
 
         // Login button
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        loginButton.setBounds(150, 250, 100, 30);
+        loginButton.setBounds(150, 300, 100, 30);
         loginPanel.add(loginButton);
-
-        // Forgot password label
-        JLabel forgotPasswordLabel = new JLabel("Forgot Password?");
-        forgotPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        forgotPasswordLabel.setForeground(Color.BLUE.darker());
-        forgotPasswordLabel.setBounds(150, 290, 200, 30);
-        forgotPasswordLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        forgotPasswordLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Forgot Password clicked!");
-            }
-        });
-        loginPanel.add(forgotPasswordLabel);
 
         // Add a mouse listener to the background to remove focus from text fields
         background.addMouseListener(new MouseAdapter() {

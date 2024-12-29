@@ -39,6 +39,12 @@ public class LoginPage extends JFrame {
         loginPanel.setBounds((screenWidth / 2 - panelWidth / 2), (screenHeight / 2 - panelHeight / 2), panelWidth, panelHeight);
         background.add(loginPanel);
 
+        // Dashboard title
+        JLabel titleLabel = new JLabel("Customer Login", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setBounds(50, 125, 300, 30);
+        loginPanel.add(titleLabel);
+
         // Placeholder for bank logo
         JLabel logoPlaceholder = new JLabel("", SwingConstants.CENTER);
         logoPlaceholder.setFont(new Font("Arial", Font.BOLD, 18));
@@ -48,38 +54,60 @@ public class LoginPage extends JFrame {
 
         // Username text field with placeholder
         JTextField usernameField = createTextField("Enter your username", 200, 30);
-        usernameField.setBounds(100, 120, 200, 30);
+        usernameField.setBounds(100, 170, 200, 30);
         loginPanel.add(usernameField);
 
         // Password text field with placeholder
         JPasswordField passwordField = createPasswordField("Enter your password", 200, 30);
-        passwordField.setBounds(100, 190, 200, 30);
+        passwordField.setBounds(100, 220, 200, 30);
         loginPanel.add(passwordField);
 
         // Login button
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        loginButton.setBounds(150, 250, 100, 30);
+        loginButton.setBounds(150, 270, 100, 30);
+        loginButton.setBackground(new Color(51, 153, 255));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setBorderPainted(false);
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Add hover effect
+        loginButton.addMouseListener(new MouseAdapter() {
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
+                                        loginButton.setBackground(new Color(0, 102, 204));
+                                    }
+
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
+                                        loginButton.setBackground(new Color(27, 143, 255));
+                                    }
+                                });
         loginPanel.add(loginButton);
 
-        // Forgot password label
-        JLabel forgotPasswordLabel = new JLabel("Forgot Password?");
-        forgotPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        forgotPasswordLabel.setForeground(Color.BLUE.darker());
-        forgotPasswordLabel.setBounds(150, 290, 200, 30);
-        forgotPasswordLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        forgotPasswordLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Forgot Password clicked!");
-            }
-        });
-        loginPanel.add(forgotPasswordLabel);
-
         // Sign up button
-        JButton signUpButton = new JButton("Sign Up");
+        JButton signUpButton = new JButton("New? Sign Up");
         signUpButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        signUpButton.setBounds(150, 330, 100, 30);
+        signUpButton.setBounds(125, 350, 150, 30);
+        signUpButton.setBackground(new Color(51, 153, 255));
+        signUpButton.setForeground(Color.WHITE);
+        signUpButton.setFocusPainted(false);
+        signUpButton.setBorderPainted(false);
+        signUpButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // Add hover effect
+        signUpButton.addMouseListener(new MouseAdapter() {
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
+                                        signUpButton.setBackground(new Color(0, 102, 204));
+                                    }
+
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
+                                        signUpButton.setBackground(new Color(27, 143, 255));
+                                    }
+                                });
+
         loginPanel.add(signUpButton);
 
         // Action listener for Sign Up button
