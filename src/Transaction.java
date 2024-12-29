@@ -7,36 +7,92 @@ import java.sql.ResultSet;
 class Transaction extends JFrame {
 
     public Transaction() {
+        // Get screen dimensions
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
+        // Set JFrame properties
         setTitle("Transaction Processing");
-        setSize(500, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setExtendedState(MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
-        JPanel transactionPanel = new JPanel();
-        transactionPanel.setLayout(null);
-        transactionPanel.setBackground(Color.LIGHT_GRAY);
+        // Background image
+        JLabel background = new JLabel(new ImageIcon("images/login_signup_background.png"));
+        background.setLayout(null);
+        add(background, BorderLayout.CENTER);
 
+        // Create a semi-transparent panel
+        JPanel transactionPanel = new JPanel();
+        transactionPanel.setBackground(new Color(255, 255, 255, 216)); // Semi-transparent white
+        transactionPanel.setLayout(null);
+
+        // Center the transaction panel
+        int panelWidth = 500;
+        int panelHeight = 400;
+        transactionPanel.setBounds((screenWidth / 2 - panelWidth / 2), (screenHeight / 2 - panelHeight / 2), panelWidth, panelHeight);
+        background.add(transactionPanel);
+
+        // Bank logo at the top
+        JLabel logoLabel = new JLabel("", SwingConstants.CENTER);
+        logoLabel.setBounds(220, 20, 66, 66);
+        logoLabel.setIcon(new ImageIcon("images/bank_logo_small.png"));
+        transactionPanel.add(logoLabel);
+
+        // Title
+        JLabel titleLabel = new JLabel("Money Transfer", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setBounds(100, 100, 300, 30);
+        transactionPanel.add(titleLabel);
+
+        // Receiver Account Number
         JLabel receiverLabel = new JLabel("Receiver Account Number:");
-        receiverLabel.setBounds(50, 50, 200, 30);
+        receiverLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        receiverLabel.setBounds(50, 150, 200, 30);
         transactionPanel.add(receiverLabel);
 
         JTextField receiverField = new JTextField();
-        receiverField.setBounds(250, 50, 200, 30);
+        receiverField.setBounds(50, 180, 400, 35);
+        receiverField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         transactionPanel.add(receiverField);
 
+        // Amount
         JLabel amountLabel = new JLabel("Amount:");
-        amountLabel.setBounds(50, 100, 200, 30);
+        amountLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        amountLabel.setBounds(50, 230, 200, 30);
         transactionPanel.add(amountLabel);
 
         JTextField amountField = new JTextField();
-        amountField.setBounds(250, 100, 200, 30);
+        amountField.setBounds(50, 260, 400, 35);
+        amountField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         transactionPanel.add(amountField);
 
-        JButton sendButton = new JButton("Send");
-        sendButton.setBounds(180, 200, 100, 30);
+        // Send Button
+        JButton sendButton = new JButton("Send Money");
+        sendButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        sendButton.setBounds(150, 320, 200, 40);
+        sendButton.setBackground(new Color(51, 153, 255));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setFocusPainted(false);
+        sendButton.setBorderPainted(false);
+        sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // Add hover effect
+        sendButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                sendButton.setBackground(new Color(0, 102, 204));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                sendButton.setBackground(new Color(51, 153, 255));
+            }
+        });
+
         transactionPanel.add(sendButton);
 
+        // Keep the original action listener
         sendButton.addActionListener(e -> {
             String receiverAccount = receiverField.getText().trim();
             String amountText = amountField.getText().trim();
@@ -64,7 +120,6 @@ class Transaction extends JFrame {
             }
         });
 
-        add(transactionPanel, BorderLayout.CENTER);
         setVisible(true);
     }
 

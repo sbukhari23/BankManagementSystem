@@ -24,7 +24,7 @@ public class EmployeeLogin extends JFrame {
         setLocationRelativeTo(null);
 
         // Background image
-        JLabel background = new JLabel(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\login_signup_background.png"));
+        JLabel background = new JLabel(new ImageIcon("images\\login_signup_background.png"));
         background.setLayout(null);
         add(background, BorderLayout.CENTER);
 
@@ -43,7 +43,7 @@ public class EmployeeLogin extends JFrame {
         JLabel logoPlaceholder = new JLabel("", SwingConstants.CENTER);
         logoPlaceholder.setFont(new Font("Arial", Font.BOLD, 18));
         logoPlaceholder.setBounds(170, 30, 66, 66);
-        logoPlaceholder.setIcon(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\bank_logo_small.png"));
+        logoPlaceholder.setIcon(new ImageIcon("images\\bank_logo_small.png"));
         loginPanel.add(logoPlaceholder);
 
         // Username text field with placeholder

@@ -43,7 +43,7 @@ public class LoginPage extends JFrame {
         JLabel logoPlaceholder = new JLabel("", SwingConstants.CENTER);
         logoPlaceholder.setFont(new Font("Arial", Font.BOLD, 18));
         logoPlaceholder.setBounds(170, 30, 66, 66);
-        logoPlaceholder.setIcon(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\bank_logo_small.png"));
+        logoPlaceholder.setIcon(new ImageIcon("images\\bank_logo_small.png"));
         loginPanel.add(logoPlaceholder);
 
         // Username text field with placeholder
@@ -116,19 +116,6 @@ public class LoginPage extends JFrame {
                 }
             }
         });
-
-        // Login as Employee button
-//        JButton loginAsEmployeeButton = new JButton("Login as Employee");
-//        loginAsEmployeeButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-//        loginAsEmployeeButton.setBounds((panelWidth - 200) / 2, 370, 200, 30); // Centered horizontally
-//        loginPanel.add(loginAsEmployeeButton);
-
-// Action listener for Login as Employee button
-//        loginAsEmployeeButton.addActionListener(e -> {
-//            JOptionPane.showMessageDialog(null, "Login as Employee clicked!");
-//            // Add logic to open employee login page or perform actions for employee login
-//        });
-
 
 
         // Set visibility

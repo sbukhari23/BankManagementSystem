@@ -28,7 +28,7 @@ public class SignupPage extends JFrame {
         add(layeredPane, BorderLayout.CENTER);
 
         // Add background image
-        JLabel background = new JLabel(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\login_signup_background.png"));
+        JLabel background = new JLabel(new ImageIcon("images\\login_signup_background.png"));
         background.setSize(screenSize);
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
 

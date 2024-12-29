@@ -16,7 +16,7 @@ public class PinSetupPage extends JFrame {
         setResizable(false);
 
         // Add background image (top portion)
-        JLabel background = new JLabel(new ImageIcon("C:\\Users\\DELL\\OneDrive\\Desktop\\NewBankManagementSystem3\\NewBankManagementSystem\\BankManagementSystem\\images\\pin_setup_background_small.jpg"));
+        JLabel background = new JLabel(new ImageIcon("images\\pin_setup_background_small.jpg"));
         background.setBounds(0, 0, 500, 150); // Image size fixed at the top
         add(background);
 

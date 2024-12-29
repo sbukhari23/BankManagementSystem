@@ -71,8 +71,6 @@ public class EmployeeDashboard extends JFrame {
         gbc.gridy++;
         employeePanel.add(deleteAccountsButton, gbc);
 
-
-
         // Add action listeners to the buttons
         viewCustomersButton.addActionListener(
                 e -> {
