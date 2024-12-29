@@ -56,17 +56,17 @@ public class CustomerDashboard extends JFrame {
         backgroundLabel.add(buttonsPanel);
 
         // Button 1: Transfer Money
-        String transferIconPath = "E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\transfer_icon.png"; // Update path
+        String transferIconPath = "images\\transfer_icon.png"; // Update path
         JPanel transferMoneyPanel = createButtonPanel("Transfer Money", transferIconPath);
         buttonsPanel.add(transferMoneyPanel);
 
         // Button 2: Transaction History
-        String historyIconPath = "E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\history_icon.png"; // Update path
+        String historyIconPath = "images\\history_icon.png"; // Update path
         JPanel transactionHistoryPanel = createButtonPanel("Transaction History", historyIconPath);
         buttonsPanel.add(transactionHistoryPanel);
 
         // Button 3: Apply for Loan
-        String loanIconPath = "E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\loan_icon.png"; // Update path
+        String loanIconPath = "images\\loan_icon.png"; // Update path
         JPanel applyForLoanPanel = createButtonPanel("Apply for Loan", loanIconPath);
 
         // Add a label to display the account balance

@@ -98,7 +98,6 @@ public class PinValidation extends JFrame {
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Incorrect PIN. Returning to Dashboard.");
-                new CustomerDashboard();
                 this.dispose();
             }
         });

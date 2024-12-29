@@ -1,17 +1,20 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
+
 public class TransactionHistory {
     public static void showHistory() {
         // Create JFrame
         JFrame frame = new JFrame("Transaction History");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setExtendedState(MAXIMIZED_BOTH);
 
         // JTable setup
         DefaultTableModel model = new DefaultTableModel();
