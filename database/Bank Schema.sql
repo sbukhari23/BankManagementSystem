@@ -117,7 +117,8 @@ SELECT DISTINCT(customer_id) AS 'Customer ID',
        state AS 'State' 
 FROM Customer
 NATURAL JOIN AccountCustomer a 
-WHERE a.customer_id IS NOT NULL;
+WHERE a.customer_id IS NOT NULL
+ORDER BY (customer_id) ASC;
 
 CREATE OR REPLACE VIEW account_view AS
 SELECT a.account_title, 
