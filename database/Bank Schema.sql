@@ -336,11 +336,3 @@ after update on loan
 for each row
 insert into loan_logs(manager_id, loan_id, action)
 values (@current_user_id, new.loan_id, new.loan_application_status);
-
-set @current_user_id = 1;
-delete from employee where employee_id = 4;
-select * from customer_logs;
-
-create or replace view customer_log_view as
-select employee_id, action, timestamp, customer_id from customer_logs where employee_id in (select employee_id from
-employee where branch_id = (select branch_id from employee where employee_id = @current_user_id)); 

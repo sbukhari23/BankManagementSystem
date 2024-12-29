@@ -144,14 +144,14 @@ public class CustomerDashboard extends JFrame {
 
     private void switchAccount() {
         try (Connection connection = DBConnection.getConnection()) {
-            String getAccounts = "SELECT account_number FROM AccountCustomer WHERE customer_id = ?";
+            String getAccounts = "SELECT a.account_title FROM AccountCustomer NATURAL JOIN Account a WHERE customer_id = ?";
             PreparedStatement stmt = connection.prepareStatement(getAccounts);
             stmt.setInt(1, Session.getUser_id());
             ResultSet rs = stmt.executeQuery();
 
             Vector<String> accounts = new Vector<>();
             while (rs.next()) {
-                accounts.add(rs.getString("account_number"));
+                accounts.add(rs.getString("account_title"));
             }
 
             String selectedAccount = (String) JOptionPane.showInputDialog(

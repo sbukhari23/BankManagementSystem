@@ -80,10 +80,10 @@ public class ManagerDashboard extends JFrame {
         viewEmployeesButton.addActionListener(e -> showEmployees());
         addEmployeeButton.addActionListener(e -> new AddEmployee());
         deleteEmployeeButton.addActionListener(e -> viewEmployees());
-        viewLoansButton.addActionListener(e -> viewLoanApplications());
+        viewLoansButton.addActionListener(e -> new LoanApplicationView());
 
         // Action listener for the new Activity Log button
-        activityLogButton.addActionListener(e -> showActivityLog());
+        activityLogButton.addActionListener(e -> new ActivityLogsDashboard());
 
         // Add a mouse listener to the background to remove focus from buttons
         background.addMouseListener(new MouseAdapter() {

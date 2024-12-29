@@ -1,7 +1,11 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class ActivityLogsDashboard extends JFrame {
 
@@ -63,23 +67,34 @@ public class ActivityLogsDashboard extends JFrame {
 
         // Add action listeners for each button
         customerLogBtn.addActionListener(e -> {
-            // Add logic to show customer logs
-            JOptionPane.showMessageDialog(null, "Opening Customer Logs...");
+            String query = "SELECT cl.employee_id AS 'Employee ID', cl.action AS Action, DATE_FORMAT(cl.timestamp, '%Y-%m-%d %H:%i:%s') AS Time" +
+                    ", cl.customer_id AS 'Customer ID', c.name AS Name, c.cnic AS CNIC FROM customer_logs cl NATURAL JOIN customer c where employee_id in (select employee_id from " +
+                    "employee where branch_id = (select branch_id from employee where employee_id = ?))";
+            showLog("Employee Log", query);
         });
 
         accountLogBtn.addActionListener(e -> {
             // Add logic to show account logs
             JOptionPane.showMessageDialog(null, "Opening Account Logs...");
+            String query = "SELECT al.employee_id, al.action, DATE_FORMAT(al.timestamp, '%Y-%m-%d %H:%i:%s'), al.account_number, a.account_title FROM Account_logs al NATURAL JOIN Account a WHERE employee_id" +
+                    " in (select employee_id from employee where branch_id = (select branch_id from employee where employee_id = ?))";
+
+            showLog("Account Logs", query);
         });
 
         employeeLogBtn.addActionListener(e -> {
             // Add logic to show employee logs
             JOptionPane.showMessageDialog(null, "Opening Employee Logs...");
+            String query = "SELECT action AS Action, DATE_FORMAT(timestamp, '%Y-%m-%d %H:%i:%s') AS Timestamp, employee_id AS 'Employee ID' FROM employee_logs WHERE manager_id = ?";
+            showLog("Employee Log", query);
         });
 
         loanLogBtn.addActionListener(e -> {
             // Add logic to show loan logs
             JOptionPane.showMessageDialog(null, "Opening Loan Logs...");
+            String query = "SELECT ll.loan_id, ll.action, DATE_FORMAT(ll.timestamp, '%Y-%m-%d %H:%i:%s') AS Timestamp, l.loan_amount, l.loan_duration, c.name, c.cnic FROM Loan_logs ll" +
+                    " NATURAL JOIN Loan l NATURAL JOIN Customer c WHERE manager_id = ?";
+            showLog("Loan Log", query);
         });
 
         // Add a mouse listener to the background to handle focus
@@ -119,6 +134,36 @@ public class ActivityLogsDashboard extends JFrame {
         });
 
         return button;
+    }
+
+    public static void showLog(String title, String query) {
+        JFrame frame = new JFrame(title);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        frame.setExtendedState(MAXIMIZED_BOTH);
+
+        try (Connection connection = DBConnection.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setInt(1, Session.getUser_id());
+            ResultSet rs = stmt.executeQuery();
+            DefaultTableModel tableModel = EmployeeDashboard.buildTableModel(rs);
+
+            // Create JTable with a non-editable model
+            JTable table = new JTable(tableModel) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false; // Disable editing
+                }
+            };
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            // Add table to frame
+            frame.add(scrollPane);
+            frame.setSize(800, 400);
+            frame.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

@@ -186,7 +186,6 @@ public class EmployeeLogin extends JFrame {
                 else {
                     // Display manager dashboard
                     new ManagerDashboard();
-
                 }
                 return true;
             } else {

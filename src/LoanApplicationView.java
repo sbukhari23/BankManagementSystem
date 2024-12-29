@@ -173,11 +173,15 @@ public class LoanApplicationView {
 
             acceptButton.addActionListener(e -> {
                 int row = table.getEditingRow();
-                handleAction(row, "'accepted'");
+                handleAction(row, "accepted");
+                acceptButton.setEnabled(false);
+                rejectButton.setEnabled(false);
             });
             rejectButton.addActionListener(e -> {
                 int row = table.getEditingRow();
-                handleAction(row, "'rejected'");
+                handleAction(row, "rejected");
+                acceptButton.setEnabled(false);
+                rejectButton.setEnabled(false);
             });
 
             panel.add(acceptButton);
@@ -189,12 +193,13 @@ public class LoanApplicationView {
                 Statement statement = connection.createStatement();
                 statement.execute("SET @current_user_id = " + Session.getUser_id());
 
-                String acceptLoan = "UPDATE Loan SET loan_application_status = "+ action + " WHERE loan_id = ?";
+                String acceptLoan = "UPDATE Loan SET loan_application_status = '" + action + "' WHERE loan_id = ?";
                 PreparedStatement stmt = connection.prepareStatement(acceptLoan);
                 stmt.setInt(1, (int)tableModel.getValueAt(row, 0));
                 stmt.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "Loan " + action);
+                tableModel.setValueAt(action, row, 4);
             }
             catch(Exception ex) {
                 ex.printStackTrace();
