@@ -5,6 +5,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -205,6 +207,16 @@ public class CreateCustomerAccountForm {
 
                 if (!dob.matches("\\d{4}-\\d{2}-\\d{2}")) {
                     JOptionPane.showMessageDialog(frame, "Invalid Date of Birth. Format must be YYYY-MM-DD.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                LocalDate DOB = LocalDate.parse(dob);
+                LocalDate currentDate = LocalDate.now();
+
+                // Calculate the age
+                int age = Period.between(DOB, currentDate).getYears();
+                if(age < 18) {
+                    JOptionPane.showMessageDialog(null, "Minimum age requirement is 18 years");
                     return;
                 }
             }
