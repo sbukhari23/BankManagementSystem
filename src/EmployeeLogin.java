@@ -66,6 +66,23 @@ public class EmployeeLogin extends JFrame {
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         loginButton.setBounds(150, 300, 100, 30);
+        loginButton.setBackground(new Color(51, 153, 255));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setBorderPainted(false);
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Add hover effect
+        loginButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                loginButton.setBackground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                loginButton.setBackground(new Color(27, 143, 255));
+            }
+        });
         loginPanel.add(loginButton);
 
         // Add a mouse listener to the background to remove focus from text fields
