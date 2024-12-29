@@ -23,14 +23,14 @@ public class CustomerDashboard extends JFrame {
         setLocationRelativeTo(null);
 
         // Background image path
-        String backgroundImagePath = "C:\\Users\\DELL\\OneDrive\\Desktop\\NewBankManagementSystem3\\NewBankManagementSystem\\BankManagementSystem\\images\\login_signup_background.png"; // Update path
+        String backgroundImagePath = "images\\login_signup_background.png";
         ImageIcon backgroundImage = new ImageIcon(backgroundImagePath);
         JLabel backgroundLabel = new JLabel(backgroundImage);
         backgroundLabel.setBounds(0, 0, screenWidth, screenHeight);
         add(backgroundLabel);
 
         // Bank logo path at the top center
-        String logoImagePath = "E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\bank_logo_small.png"; // Update path
+        String logoImagePath = "images\\bank_logo_small.png"; // Update path
         JLabel logoPlaceholder = new JLabel("", SwingConstants.CENTER);
         logoPlaceholder.setFont(new Font("Segoe UI", Font.BOLD, 18));
         logoPlaceholder.setBounds(screenWidth / 2 - 100, 20, 64, 64); // Adjust logo size and position
@@ -38,7 +38,7 @@ public class CustomerDashboard extends JFrame {
         backgroundLabel.add(logoPlaceholder);
 
         // Switch Account button path at the top left with image icon
-        String switchAccountIconPath = "E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\switch_account_icon.png"; // Update path
+        String switchAccountIconPath = "images\\switch_account_icon.png"; // Update path
         JButton switchAccountButton = new JButton("Switch Account");
         switchAccountButton.setBounds(20, 20, 170, 30);
         switchAccountButton.setIcon(new ImageIcon(switchAccountIconPath));

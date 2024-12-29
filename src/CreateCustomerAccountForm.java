@@ -77,7 +77,7 @@ public class CreateCustomerAccountForm {
         frame.setLocationRelativeTo(null); // Center the frame
 
         // Background image
-        JLabel background = new JLabel(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\login_signup_background.png"));
+        JLabel background = new JLabel(new ImageIcon("images\\login_signup_background.png"));
         background.setLayout(null);
         frame.add(background);
 

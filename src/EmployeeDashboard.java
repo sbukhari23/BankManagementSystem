@@ -23,7 +23,7 @@ public class EmployeeDashboard extends JFrame {
         setLocationRelativeTo(null);
 
         // Background image
-        JLabel background = new JLabel(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\login_signup_background.png"));
+        JLabel background = new JLabel(new ImageIcon("images\\login_signup_background.png"));
         background.setLayout(null);
         add(background, BorderLayout.CENTER);
 
@@ -48,7 +48,7 @@ public class EmployeeDashboard extends JFrame {
 // Placeholder for logo
         JLabel logoPlaceholder = new JLabel("", SwingConstants.CENTER);
         logoPlaceholder.setFont(new Font("Arial", Font.BOLD, 18));
-        logoPlaceholder.setIcon(new ImageIcon("E:\\DBS Project\\NewBankManagementSystem\\BankManagementSystem\\images\\bank_logo_small.png"));
+        logoPlaceholder.setIcon(new ImageIcon("images\\bank_logo_small.png"));
 
 // Add logo to the panel at the top
         gbc.insets = new Insets(10, 0, 10, 0); // Spacing between components
