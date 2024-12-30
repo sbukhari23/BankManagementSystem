@@ -4,6 +4,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -83,6 +85,23 @@ public class SignupPage extends JFrame {
         // Sign Up button
         JButton signUpButton = new JButton("Sign Up");
         signUpButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        signUpButton.setBackground(new Color(0, 0, 0));
+        signUpButton.setForeground(Color.WHITE);
+        signUpButton.setFocusPainted(false);
+        signUpButton.setBorderPainted(false);
+        signUpButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Add hover effect
+        signUpButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                signUpButton.setBackground(new Color(85, 85, 85));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                signUpButton.setBackground(new Color(0, 0, 0));
+            }
+        });
         signUpButton.setEnabled(false);
         gbc.gridy++;
         signupPanel.add(signUpButton, gbc);
@@ -90,12 +109,46 @@ public class SignupPage extends JFrame {
         // Back to Sign In button
         JButton backToSignInButton = new JButton("Back to Sign In");
         backToSignInButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        backToSignInButton.setBackground(new Color(51, 153, 255));
+        backToSignInButton.setForeground(Color.WHITE);
+        backToSignInButton.setFocusPainted(false);
+        backToSignInButton.setBorderPainted(false);
+        backToSignInButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Add hover effect
+        backToSignInButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                backToSignInButton.setBackground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backToSignInButton.setBackground(new Color(27, 143, 255));
+            }
+        });
         gbc.gridy++;
         signupPanel.add(backToSignInButton, gbc);
 
         // Apply For Loan
         JButton applyForLoanButton = new JButton("Apply For Loan");
         applyForLoanButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        applyForLoanButton.setBackground(new Color(51, 153, 255));
+        applyForLoanButton.setForeground(Color.WHITE);
+        applyForLoanButton.setFocusPainted(false);
+        applyForLoanButton.setBorderPainted(false);
+        applyForLoanButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Add hover effect
+        applyForLoanButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                applyForLoanButton.setBackground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                applyForLoanButton.setBackground(new Color(27, 143, 255));
+            }
+        });
         gbc.gridy++;
         signupPanel.add(applyForLoanButton, gbc);
 
