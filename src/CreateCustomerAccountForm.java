@@ -140,7 +140,44 @@ public class CreateCustomerAccountForm {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center buttons
 
         JButton submitButton = new JButton("Submit");
+        submitButton.setBackground(new Color(51, 153, 255));
+        submitButton.setForeground(Color.WHITE);
+        submitButton.setFocusPainted(false);
+        submitButton.setBorderPainted(false);
+        submitButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // Add hover effect
+        submitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                submitButton.setBackground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                submitButton.setBackground(new Color(27, 143, 255));
+            }
+        });
+
         JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBackground(new Color(51, 153, 255));
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setFocusPainted(false);
+        cancelButton.setBorderPainted(false);
+        cancelButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // Add hover effect
+        cancelButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                cancelButton.setBackground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                cancelButton.setBackground(new Color(27, 143, 255));
+            }
+        });
 
         // Add button actions
         cancelButton.addActionListener(e -> {
