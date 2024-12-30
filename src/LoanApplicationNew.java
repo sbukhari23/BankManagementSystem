@@ -180,7 +180,7 @@ public class LoanApplicationNew extends JFrame {
                 if (dob.isEmpty() || dob.equals("Enter DOB (YYYY-MM-DD)")) {
                     throw new IllegalArgumentException("Date of Birth is required.");
                 }
-                if (!dob.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                if (!dob.matches("\\d{4}-\\d{2}-\\d{2}") || !CreateCustomerAccountForm.isValidDate(dob, "yyyy-MM-dd")) {
                     throw new IllegalArgumentException("DOB must be in the format YYYY-MM-DD.");
                 }
 

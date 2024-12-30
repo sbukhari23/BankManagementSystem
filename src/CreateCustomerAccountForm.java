@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -242,7 +244,7 @@ public class CreateCustomerAccountForm {
                     return;
                 }
 
-                if (!dob.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                if (!dob.matches("\\d{4}-\\d{2}-\\d{2}") || !isValidDate(dob, "yyyy-MM-dd")) {
                     JOptionPane.showMessageDialog(frame, "Invalid Date of Birth. Format must be YYYY-MM-DD.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -479,6 +481,16 @@ public class CreateCustomerAccountForm {
             } else if (component instanceof Container) {
                 clearTextFields((Container) component); // Recursively check child containers
             }
+        }
+    }
+
+    public static boolean isValidDate(String date, String format) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        try {
+            LocalDate.parse(date, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
         }
     }
 
