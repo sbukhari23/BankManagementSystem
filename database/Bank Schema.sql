@@ -142,6 +142,7 @@ BEGIN
     
     INSERT INTO Account_logs (employee_id, action, account_number)
     VALUES (@current_user_id, 'Account closed', acc_number);
+    
     DELETE FROM AccountCustomer WHERE account_number = acc_number;
 END //
 DELIMITER ;
@@ -218,7 +219,7 @@ INSERT INTO AccountCustomer (customer_id, account_number) VALUES
 (1, '1234567890'),
 (2, '9876543210'),
 (3, '1122334455');
-
+drop trigger customer_update_trigger;
 -- Final Step: Verification Queries
 SELECT * FROM Customer;
 SELECT * FROM Account;
@@ -230,11 +231,11 @@ SELECT * FROM Deleted_Accounts;
 SELECT * FROM Loan;
 SELECT * FROM customer_view;
 SELECT * FROM account_view;
-
+drop trigger account_close_trigger;
 create table customer_logs (
 	log_id int auto_increment primary key,
     employee_id int not null,
-    action enum('Customer created', 'Customer updated') not null,
+    action enum('Customer created') not null,
     timestamp datetime not null default current_timestamp,
     customer_id bigint not null,
     foreign key (customer_id) references customer(customer_id)
@@ -332,3 +333,6 @@ values (@current_user_id, new.loan_id, new.loan_application_status);
 select * from deleted_employees;
 select * from employee_logs;
 select * from loan_logs;
+
+
+update customer set transaction_pin = 111111 where customer_id = 5;

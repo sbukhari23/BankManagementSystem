@@ -11,7 +11,7 @@ public class PinSetupPage extends JFrame {
         // Set JFrame properties
         setTitle("Setup your PIN (6 Digits)");
         setSize(500, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(null);
         setResizable(false);
 
