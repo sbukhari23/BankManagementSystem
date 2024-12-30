@@ -48,6 +48,22 @@ public class CustomerDashboard extends JFrame {
         switchAccountButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         backgroundLabel.add(switchAccountButton);
 
+        JButton logOutButton = new JButton("LogOut");
+        logOutButton.setBounds(20, 60, 170, 30);
+        logOutButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        logOutButton.setBackground(Color.WHITE);
+        logOutButton.setFocusPainted(false);
+        logOutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backgroundLabel.add(logOutButton);
+
+        JButton loanStatusButton = new JButton("Check Loan Status");
+        loanStatusButton.setBounds(20, 100, 170, 30);
+        loanStatusButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        loanStatusButton.setBackground(Color.WHITE);
+        loanStatusButton.setFocusPainted(false);
+        loanStatusButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backgroundLabel.add(loanStatusButton);
+
         // Panel for buttons and descriptions
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 3, 20, 20)); // 1 row, 3 columns with 20px spacing
@@ -79,8 +95,51 @@ public class CustomerDashboard extends JFrame {
         // ActionListeners
         // Switch Account Button
         switchAccountButton.addActionListener(e -> {
+            updateBalance();
             switchAccount();
             updateBalance();
+        });
+
+        //Logout action
+        logOutButton.addActionListener(e -> {
+            new LoginPage();
+            dispose();
+        });
+
+        //Loan status
+        loanStatusButton.addActionListener(e -> {
+            JFrame frame = new JFrame("");
+            JDialog dialog = new JDialog(frame, "Loan Status", true);
+            dialog.setLayout(new BorderLayout());
+            try(Connection connection = DBConnection.getConnection()) {
+                String getLoanStatus = "SELECT loan_amount, loan_duration, loan_purpose, loan_application_status FROM Loan WHERE customer_id = ?";
+                PreparedStatement stmt = connection.prepareStatement(getLoanStatus);
+                stmt.setInt(1, Session.getUser_id());
+                ResultSet rs = stmt.executeQuery();
+                String loanDetails = "";
+                if(!rs.next()) {
+                    loanDetails = "You did not apply for loan";
+                }
+                else {
+                    loanDetails = "Loan Amount: " + rs.getObject("loan_amount") + "\nLoan Duration: " +
+                            rs.getObject("loan_duration") + "\nPurpose: " + rs.getObject("loan_purpose") +
+                            "\nStatus: " + rs.getObject("loan_application_status");
+                }
+                JTextArea detailsArea = new JTextArea(loanDetails);
+                detailsArea.setEditable(false);
+                dialog.add(new JScrollPane(detailsArea), BorderLayout.CENTER);
+
+                JButton closeButton = new JButton("Close");
+                closeButton.addActionListener(d -> dialog.dispose());
+                dialog.add(closeButton, BorderLayout.SOUTH);
+
+                dialog.setSize(400, 300);
+                dialog.setLocationRelativeTo(frame);
+                dialog.setVisible(true);
+            }
+            catch(Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
         // Transfer Money Button
@@ -144,14 +203,14 @@ public class CustomerDashboard extends JFrame {
 
     private void switchAccount() {
         try (Connection connection = DBConnection.getConnection()) {
-            String getAccounts = "SELECT a.account_title FROM AccountCustomer NATURAL JOIN Account a WHERE customer_id = ?";
+            String getAccounts = "SELECT a.account_number FROM AccountCustomer NATURAL JOIN Account a WHERE customer_id = ?";
             PreparedStatement stmt = connection.prepareStatement(getAccounts);
             stmt.setInt(1, Session.getUser_id());
             ResultSet rs = stmt.executeQuery();
 
             Vector<String> accounts = new Vector<>();
             while (rs.next()) {
-                accounts.add(rs.getString("account_title"));
+                accounts.add(rs.getString("account_number"));
             }
 
             String selectedAccount = (String) JOptionPane.showInputDialog(

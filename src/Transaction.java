@@ -205,7 +205,7 @@ class Transaction extends JFrame {
         try (Connection connection = DBConnection.getConnection()) {
             String getBalance = "SELECT balance FROM Account WHERE account_number = ?";
             PreparedStatement stmt = connection.prepareStatement(getBalance);
-            stmt.setString(1, accountNo);
+            stmt.setString(1, Session.getAccount_no());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -214,7 +214,7 @@ class Transaction extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Unable to retrieve balance.");
         }
-        return -1;
+        return -2;
     }
 
     public static void main(String[] args) {

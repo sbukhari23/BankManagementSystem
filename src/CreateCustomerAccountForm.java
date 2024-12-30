@@ -406,7 +406,7 @@ public class CreateCustomerAccountForm {
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                JOptionPane.showMessageDialog(null, "Account created");
+                JOptionPane.showMessageDialog(null, "Account " + accountTitle + " with account number " + account_number + "created");
             }
 
             clearTextFields(formPanel);

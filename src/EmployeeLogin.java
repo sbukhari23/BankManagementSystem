@@ -183,7 +183,7 @@ public class EmployeeLogin extends JFrame {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String hashedPassword = rs.getString("passhash");
-                if (!password.equals(hashedPassword)) {
+                if (!verifyPassword(password, hashedPassword)) {
                     JOptionPane.showMessageDialog(null, "Incorrect password");
                     return false;
                 }

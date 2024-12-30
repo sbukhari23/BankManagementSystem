@@ -108,8 +108,10 @@ public class LoanApplication extends JFrame {
                 dispose();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Invalid loan amount. Please enter a numeric value.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
             try(Connection connection = DBConnection.getConnection()) {
